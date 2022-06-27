@@ -1,0 +1,65 @@
+/*Se dispone de un archivo llamado RATING.dat que guarda la informaci�n de los puntos obtenidos de rating en los distintos programas de canales de cable a lo largo del d�a. Cada registro contiene:
+
+ �  N�mero de canal (entero)
+ �  Programa (texto de 35 caracteres m�ximo)
+ �  Rating (float)
+
+El archivo se encuentra ordenado por canal. Se solicita informar:
+
+ a.  Aquellos canales que obtengan menos de 15 puntos en total.
+ b.  El canal m�s visto.
+ c.  Generar un archivo con el promedio de rating de cada canal que incluya dos campos:
+
+ �  N�mero de canal
+ �  Promedio*/
+ /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ #include <stdio.h>
+ #include <strings.h>
+ typedef struct{int numcanal;
+                char prog[36];
+                float rating;
+                }T_Puntostv;
+void corte ();
+void main()
+ {
+    corte();
+
+ }
+void corte ()
+{
+int i=0,puntosob,band=0;
+
+FILE *pf;
+T_Puntostv aux;
+int canalant,visto,canal,masvisto;
+pf=fopen("RATING.dat","rb");
+    if(pf==NULL)
+        {
+            printf("\n No se pudo abrir el archivo...");
+            exit(1);
+        }
+    fread(&aux,sizeof(T_Puntostv),1,pf);
+    while(!feof(pf))
+        {
+            canalant=aux.numcanal;
+            puntosob=0;
+            visto=0;
+            while(canalant==aux.numcanal && !feof(pf))
+                {
+                    puntosob+=aux.rating;
+
+                }
+
+            if(puntosob<15)
+                {
+                    printf("El canal %d no alcanzo los 15 puntos de rating",canalant);
+                }
+            if(band==0||puntosob>masvisto)
+            {
+            band=1;
+            masvisto=puntosob;
+            canal=canalant;
+            }
+            printf("El canal mas visto es %d",canal);
+        }
+}
