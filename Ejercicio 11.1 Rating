@@ -19,6 +19,8 @@ El archivo se encuentra ordenado por canal. Se solicita informar:
                 char prog[36];
                 float rating;
                 }T_Puntostv;
+ typedef struct {int Numcan;
+                 float prom;}T_Archrating;
 void corte ();
 void main()
  {
@@ -27,39 +29,51 @@ void main()
  }
 void corte ()
 {
-int i=0,puntosob,band=0;
+    int i=0,puntosob,band=0,cPrograma;
 
-FILE *pf;
-T_Puntostv aux;
-int canalant,visto,canal,masvisto;
-pf=fopen("RATING.dat","rb");
+    FILE *pf;
+
+    T_Puntostv aux;
+    T_Archrating aux2;
+    int canalant,visto,canal,masvisto;
+    pf=fopen("RATING.dat","rb");
     if(pf==NULL)
-        {
-            printf("\n No se pudo abrir el archivo...");
-            exit(1);
-        }
+    {
+        printf("\n No se pudo abrir el archivo...");
+        exit(1);
+    }
+    FILE *pEscribir = fopen("promedio.dat","wb");
+    if(pEscribir==NULL)
+    {
+        printf("\n No se pudo abrir el archivo...");
+        exit(1);
+    }
     fread(&aux,sizeof(T_Puntostv),1,pf);
     while(!feof(pf))
+    {
+        canalant=aux.numcanal;
+        puntosob=0;
+        cPrograma=0;
+        while(canalant==aux.numcanal && !feof(pf))
         {
-            canalant=aux.numcanal;
-            puntosob=0;
-            visto=0;
-            while(canalant==aux.numcanal && !feof(pf))
-                {
-                    puntosob+=aux.rating;
+            puntosob+=aux.rating;
+            cPrograma++;
+            fread(&aux,sizeof(T_Puntostv),1,pf);
+        }
 
-                }
-
-            if(puntosob<15)
-                {
-                    printf("El canal %d no alcanzo los 15 puntos de rating",canalant);
-                }
-            if(band==0||puntosob>masvisto)
-            {
+        if(puntosob<15)
+        {
+            printf("\n\nEl canal %d no alcanzo los 15 puntos de rating\n",canalant);
+        }
+        if(band==0||puntosob>masvisto)
+        {
             band=1;
             masvisto=puntosob;
             canal=canalant;
-            }
-            printf("El canal mas visto es %d",canal);
         }
+        aux2.prom=(float)puntosob/cPrograma;
+        aux2.Numcan=canalant;
+        fwrite(&aux2,sizeof(T_Archrating),1,pEscribir);
+    }
+    printf("\n\nEl canal mas visto es %d",canal);
 }
