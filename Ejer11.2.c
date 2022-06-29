@@ -1,27 +1,27 @@
 /*Se dispone de un archivo con las ventas del mes de cada una de las sucursales de una empresa (VENTAS.DAT El archivo se
 encuentra ordenado por sucursal y contiene la siguiente estructura:
 
- •  Sucursal (15 caracteres máximo)     //ORDENADO
- •  Código de producto (entero)
- •  Cantidad (entero)
+ ï¿½  Sucursal (15 caracteres mï¿½ximo)     //ORDENADO
+ ï¿½  Cï¿½digo de producto (entero)
+ ï¿½  Cantidad (entero)
 
 Por otro lado se dispone de un archivo de los productos (PRODUCTOS.dat que vende la empresa y el estado del stock al mes
 pasado con la siguiente estructura:
 
- •  Código de producto (entero)
- •  Descripción (20 caracteres máximo)
- •  Precio (float)
- •  Stock (entero)
- •  Punto de pedido (entero)
- •  Cantidad para pedido (entero)
+ ï¿½  Cï¿½digo de producto (entero)
+ ï¿½  Descripciï¿½n (20 caracteres mï¿½ximo)
+ ï¿½  Precio (float)
+ ï¿½  Stock (entero)
+ ï¿½  Punto de pedido (entero)
+ ï¿½  Cantidad para pedido (entero)
 
-No se sabe la cantidad exacta de productos pero sí se sabe que no hay más de 200. Se desea:
+No se sabe la cantidad exacta de productos pero sï¿½ se sabe que no hay mï¿½s de 200. Se desea:
 
  a.  Mostrar el total vendido en cada sucursal.
- b.  Mostrar la recaudación total de la empresa en el mes.
- c.  Determinar la sucursal que vendió mayor cantidad de productos.
+ b.  Mostrar la recaudaciï¿½n total de la empresa en el mes.
+ c.  Determinar la sucursal que vendiï¿½ mayor cantidad de productos.
  d.  Actualizar el archivo de productos con el nuevo stock.
- e.  Realizar un archivo llamado pedidos.dat que incluya aquellos productos que deben solicitarse (código y cantidad) de
+ e.  Realizar un archivo llamado pedidos.dat que incluya aquellos productos que deben solicitarse (cï¿½digo y cantidad) de
 aquellos productos que al finalizar de procesar las ventas del mes queden con stock menor al punto de pedido.*/
 //INCLUDE////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <stdio.h>
@@ -47,9 +47,9 @@ typedef struct {
 				int cantidadPedido;
 				}T_Faltantes;
 //FUNCtion
-int CargaArch(T_Prod, int);
-void ProcesarYGrabarArch(T_Prod, int);
-int Busqueda(T_Prod, int, int);
+int CargaArch(T_Prod [], int);
+void ProcesarYGrabarArch(T_Prod [], int);
+int Busqueda(T_Prod [], int, int);
 //MAIN
 int main()
 {
@@ -106,14 +106,23 @@ void ProcesarYGrabarArch(T_Prod V[], int ce)
 	while(!feof(sf))
 	{
 		reacT=0;
-		pos=Busqueda(V[], ce, aux.codProd);
+		pos=Busqueda(V, ce, aux.codProd);
 		if(pos!=-1)
 		{
 			totvtaS=0;
 			strcpy(sucAnt, aux.suc);
+			while(strcmpi(sucAnt,aux.suc) && !feof(sf))
+            {
+                    reacT+=aux.cant;
+                    totvtaS+=aux.cant;
+
+            }
+            printf("\nLa sucursal %s vendio la cantidad de %d productos",sucAnt,totvtaS);
 
 		}
 		fread(&aux, sizeof(T_Vta), 1, sf);
+		printf("\nEl Total vendido por la empresa en el mes es de %d",reacT);
+
 	}
 	fclose(sf);
     fclose(tf);
@@ -123,7 +132,7 @@ int Busqueda(T_Prod V[], int ce, int x)
 {
 	int i=0;
 	while(V[i].codProd!=x && i<ce)
-        i++;
+    i++;
     if(i==ce)
         return -1;
     else
