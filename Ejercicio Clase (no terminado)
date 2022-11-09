@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct{char eve[11];
+               int puerta;
+               int espec;
+               }Testadio;
+
+///////////////////////////////////////////////////////////////////////////////////////////
+int main()
+{
+    int espectadores,band=1,min;
+    Testadio aux;
+    char eveant[11],menorev[11];
+    FILE *esta;
+    esta=fopen("ESTADIO.DAT","rb");
+    if(esta==NULL)
+    {
+        printf("Error al leer estadio");
+        exit(1);
+    }
+    fread(&aux,sizeof(Testadio),1,esta);
+    while(!feof(esta))
+    {
+    strcpy(eveant,aux.eve);
+    espectadores=0;
+    while(strcmpi(eveant,aux.eve)!=0 && !feof(esta))
+        {
+            espectadores+=aux.espec;
+        }
+        printf("El evento %s tuvo un total de %d espectadores",eveant,espectadores);
+        if(band==1||min<espectadores)
+            {
+                strcpy(menorev,eveant);
+                min=espectadores;
+            }
+    fread(&aux,sizeof(Testadio),1,esta);
+    printf("El evento %s tuvo %d espectadores siendo el menor visto",menorev,min);
+    }
+}
