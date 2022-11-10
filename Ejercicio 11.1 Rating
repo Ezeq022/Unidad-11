@@ -1,79 +1,79 @@
-/*Se dispone de un archivo llamado RATING.dat que guarda la informaci�n de los puntos obtenidos de rating en los distintos programas de canales de cable a lo largo del d�a. Cada registro contiene:
+/*
+Se dispone de un archivo llamado Rating.dat que guarda la información de los puntos obtenidos de rating
+en los distintos programas de canales de cable a lo largo del día. Cada registro contiene:
+• Número de canal (entero)
+• Programa (texto de 35 caracteres máximo)
+• Rating (float)
+El archivo se encuentra ordenado por canal.
+Se solicita informar:
+a. Aquellos canales que obtengan menos de 15 puntos en total.
+b. El canal más visto.
+c. Generar un archivo con el promedio de rating de cada canal que incluya dos campos:
+• Número de canal.
+• Promedio.
+*/
 
- �  N�mero de canal (entero)
- �  Programa (texto de 35 caracteres m�ximo)
- �  Rating (float)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#include <stdio.h>
+#include <stdlib.h>
 
-El archivo se encuentra ordenado por canal. Se solicita informar:
+typedef struct{int canal;
+               char programa[36];
+               float rating;
+              }Trating;
 
- a.  Aquellos canales que obtengan menos de 15 puntos en total.
- b.  El canal m�s visto.
- c.  Generar un archivo con el promedio de rating de cada canal que incluya dos campos:
+typedef struct{int canal;
+               float prom;
+               }Tpromedio;
 
- �  N�mero de canal
- �  Promedio*/
- /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- #include <stdio.h>
- #include <strings.h>
- typedef struct{int numcanal;
-                char prog[36];
-                float rating;
-                }T_Puntostv;
- typedef struct {int Numcan;
-                 float prom;}T_Archrating;
-void corte ();
-void main()
- {
-    corte();
 
- }
-void corte ()
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int main()
 {
-    int i=0,puntosob,band=0,cPrograma;
-
-    FILE *pf;
-
-    T_Puntostv aux;
-    T_Archrating aux2;
-    int canalant,visto,canal,masvisto;
-    pf=fopen("RATING.dat","rb");
-    if(pf==NULL)
+    Trating aux;
+    Tpromedio aux2;
+    int canalant,puntos,visto,band=1,masvisto,canalvisto;
+    FILE *prom;
+    prom=fopen("PROMEDIORATING.DAT","wb");
+    if(prom==NULL)
     {
-        printf("\n No se pudo abrir el archivo...");
+        printf("Error al grabar archivo");
         exit(1);
     }
-    FILE *pEscribir = fopen("promedio.dat","wb");
-    if(pEscribir==NULL)
+    FILE *rati;
+    rati=fopen("Rating.dat","rb");
+    if(rati==NULL)
     {
-        printf("\n No se pudo abrir el archivo...");
+        printf("Error al leer rating");
         exit(1);
     }
-    fread(&aux,sizeof(T_Puntostv),1,pf);
-    while(!feof(pf))
+    fread(&aux,sizeof(Trating),1,rati);
+    while(!feof(rati))
     {
-        canalant=aux.numcanal;
-        puntosob=0;
-        cPrograma=0;
-        while(canalant==aux.numcanal && !feof(pf))
-        {
-            puntosob+=aux.rating;
-            cPrograma++;
-            fread(&aux,sizeof(T_Puntostv),1,pf);
-        }
-
-        if(puntosob<15)
-        {
-            printf("\n\nEl canal %d no alcanzo los 15 puntos de rating\n",canalant);
-        }
-        if(band==0||puntosob>masvisto)
-        {
-            band=1;
-            masvisto=puntosob;
-            canal=canalant;
-        }
-        aux2.prom=(float)puntosob/cPrograma;
-        aux2.Numcan=canalant;
-        fwrite(&aux2,sizeof(T_Archrating),1,pEscribir);
+        canalant=aux.canal;
+        puntos=0;
+        while(canalant==aux.canal && !feof(rati))
+            {
+                puntos+=aux.rating;
+                visto++;
+                fread(&aux,sizeof(Trating),1,rati);
+            }
+            if(puntos<15)
+                {
+                    printf("El canal %d no alcanzo los 15 puntos",canalant);
+                }
+            if(band==1 || puntos>masvisto)
+                {
+                    band=0;
+                    masvisto=puntos;
+                    canalvisto=canalant;
+                }
+        aux2.prom=(float)puntos/visto;
+        aux2.canal=canalant;
+        fwrite(&aux2,sizeof(Tpromedio),1,prom);
     }
-    printf("\n\nEl canal mas visto es %d",canal);
+    printf("El canal mas visto es %d",canalvisto);
+    fclose(rati);
+    fclose(prom);
 }
