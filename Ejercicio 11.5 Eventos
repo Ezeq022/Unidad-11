@@ -1,0 +1,83 @@
+/*
+En un estadio de fútbol se incorporó un nuevo sistema para censar la cantidad de espectadores que pasan
+por cada una de las entradas de forma de analizar el comportamiento de la gente y poder diseñar una mejor
+distribución de las vías de acceso.
+El estadio tiene 15 puertas numeradas del 1 al 15. La recolección de datos se realizó en todos los partidos
+disputados en el estadio a lo largo de varios meses para poder tener un volumen de información suficiente
+que permita realizar un análisis.
+La información registrada se encuentra en un archivo con la siguiente estructura:
+• Código del Evento (texto de 10 caracteres máximo)
+• Número de puerta (entero)
+• Cantidad de Espectadores (entero)
+La información se haya ordenada por Código de Evento. Se solicita calcular y mostrar:
+a. Cantidad de espectadores por cada evento.
+b. El evento con menor cantidad de espectadores.
+c. Grabar un archivo con el promedio de espectadores que ingresaron por cada una de las 15 entradas.
+en todos los eventos analizados, informando el número de puerta y promedio.
+*/
+
+///////////////////////////////////////////////////////////////////////////////////////////
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct{char eve[11];
+               int puerta;
+               int espec;
+               }Testadio;
+
+typedef struct{int puerta;
+               float prom;
+              }Tprom;
+
+///////////////////////////////////////////////////////////////////////////////////////////
+int main()
+{
+    int espectadores,band=1,min,puertas[15]={0},i;
+    Testadio aux;
+    Tprom aux2;
+    char eveant[11],menorev[11],eve=0;
+    FILE *esta;
+    esta=fopen("ESTADIO.DAT","rb");
+    if(esta==NULL)
+    {
+        printf("Error al leer estadio");
+        exit(1);
+    }
+    fread(&aux,sizeof(Testadio),1,esta);
+    while(!feof(esta))
+    {
+    strcpy(eveant,aux.eve);
+    espectadores=0;
+    while(strcmpi(eveant,aux.eve)!=0 && !feof(esta))
+        {
+            espectadores+=aux.espec;
+            puertas[aux.puerta-1]+=aux.espec;
+            fread(&aux,sizeof(Testadio),1,esta);
+        }
+        eve++;
+        printf("El evento %s tuvo un total de %d espectadores",eveant,espectadores);
+        if(band==1||min<espectadores)
+            {
+                strcpy(menorev,eveant);
+                min=espectadores;
+            }
+
+    printf("El evento %s tuvo %d espectadores siendo el menor visto",menorev,min);
+    }
+    FILE *prome;
+    prome=fopen("PROMEDIOS.DAT","wb");
+    if(prome==NULL)
+    {
+        printf("Error al grabar prom");
+        exit(1);
+    }
+    for(i=0;i<15;i++)
+    {
+        aux2.puerta=i+1;
+        aux2.prom=puertas[i]/eve;
+        fwrite(&aux2,sizeof(Tprom),1,prome);
+    }
+    fclose(esta);
+    fclose(prome);
+}
