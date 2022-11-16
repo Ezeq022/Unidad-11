@@ -57,8 +57,8 @@ int main()
     int cant;
 
     cant = LeerArch(venta,200);
-    ProcesarArch(venta,200);
-    Actualizar(venta,200);
+    ProcesarArch(venta,cant);
+    Actualizar(venta,cant);
 
 
 
