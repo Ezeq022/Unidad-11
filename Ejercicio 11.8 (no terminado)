@@ -1,0 +1,134 @@
+/*
+Una empresa dispone de un archivo ARTIC_PRECIO, con los siguientes datos de sus casi 500 artículos:
+• Número de Artículo (entero, de 8 cifras)
+• Precio Unitario (real, mayor que cero)
+Existe un segundo archivo PROVIN, con los siguientes datos de sus 30 vendedores:
+• Nombre del Vendedor (alfanumérico de 30 caracteres)
+• Número de Provincia (entero, de 1 a 24)
+Se tiene un tercer archivo llamado VTA_CANT, ordenado por región del país, con las ventas realizadas. Por
+cada venta se informa lo siguiente:
+• Región del país (alfanumérico de 3 caracteres)
+• Nombre de Vendedor
+• Mes (entero, de 1 a 12)
+• Número de Artículo
+• Unidades Vendidas (entero mayor que cero)
+Confeccionar un programa que partiendo de la información suministrada permita determinar e informar:
+a. Un listado con el importe de las ventas realizadas en cada provincia en cada uno de los meses:
+ PROVINCIA MES 1 MES 2 .... MES 12
+ XX XXXXXX XXXXXXX XXXXXXXX
+b. Un listado con los nombres de los vendedores que no han tenido ventas en más de 3 meses
+consecutivos.
+c. Informar en qué región del país se vendió menos (en importe).
+*/
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct
+{
+    int art;
+    float precio;
+}Tarti;
+
+typedef struct
+{
+    char vendedor[31];
+    int provincia;
+}Tprovi;
+
+typedef struct
+{
+    char region[4];
+    char vendedor[31];
+    int mes;
+    int art;
+    int univen;
+}Tventa;
+
+int CargaVec(Tarti[],int);
+int CargaVende(Tprovi[],int);
+void ProcesarArch(Tarti[],int,Tprovi[],int);
+/////////////////////////////////////////////////////////////////////////////////////
+int main()
+{
+    Tarti articulos[500];
+    Tprovi vendedor[30];
+    Tventa aux;
+    int cant,vende;
+    char regant[4];
+
+    cant = CargaVec(articulos,500);
+    vende = CargaVende(vendedor,30);
+    ProcesarArch(articulos,cant,vendedor,vende);
+
+
+}
+int CargaVec(Tarti v[],int ce)
+{
+    Tarti aux;
+    int i=0;
+    FILE *artic;
+    artic = fopen("ARTIC_PRECIO.DAT","rb");
+    if(artic==NULL)
+    {
+        printf("Error al leer artic");
+        exit(1);
+    }
+    fread(&aux,sizeof(Tarti),1,artic);
+    while(!feof(artic) && i < ce)
+    {
+        v[i]=aux;
+        i++;
+        fread(&aux,sizeof(Tarti),1,artic);
+    }
+    fclose(artic);
+    return i;
+}
+int CargaVende(Tprovi v[],int ce)
+{
+    int i=0;
+    Tprovi aux;
+    FILE *provi;
+    provi = fopen("PROVIN.DAT","rb");
+    if(provi==NULL)
+    {
+        printf("Error al leer provi");
+        exit(1);
+    }
+    fread(&aux,sizeof(Tprovi),1,provi);
+    while(!feof(provi) && i < ce)
+    {
+        v[i]=aux;
+        i++;
+        fread(&aux,sizeof(Tprovi),1,provi);
+    }
+    fclose(provi);
+    return i;
+}
+void ProcesarArch(Tarti vArti[],int cantart,Tprovi vVendedor[],int cantven)
+{
+    char regant[31];
+    float impo,mesxprovi[24][12]={{0}};
+    int mesvendio[30][12]={{0}};
+    Tventa aux;
+    FILE *venta
+    venta = fopen("VTA_CANT.DAT","rb");
+    if(venta==NULL)
+    {
+        prinft("Error al leer venta");
+        exit(1);
+    }
+    fread(&aux,sizeof(Tventa),1,venta);
+    while(!feof(venta))
+    {
+        strcpy(regant,aux.region);
+        impo=0;
+        pos=
+        while(strcmpi(regant,aux.region)!=0 &6 !feof(venta))
+        {
+            impo+=vArti[]
+        }
+    }
+    
+}
